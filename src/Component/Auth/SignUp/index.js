@@ -1,56 +1,151 @@
-import React, { Component } from 'react';
-import { render } from '@testing-library/react';
-import {Link} from "react-router-dom";
+import React, { Component } from "react";
+import { Link, Redirect} from "react-router-dom";
+import { signUpRequest } from "../../../Actions";
+import { connect } from "react-redux";
 
 import Header from "../../../Component/CommonComponent/Header";
 import Footer from "../../../Component/CommonComponent/Footer";
 
-import closeImage from "../../../images/PNG/cross.png"
-
 import "./style.css";
 
 class SignUp extends Component {
-    render() {
-        return (
-            <>
-                <Header />
-                <div className="container">
-                    <div class="signup">
-                        <div class="signup__close">
-                            <a href="#">
-                                <div class="signup__close__icon">
-                                    <img src={closeImage}></img>
-                                </div>
-                            </a>
-
-                        </div>
-
-                        <div class="signup__heading">
-                            <h1 >Sign Up</h1>
-                        </div>
-
-                        <form action="#" class="signup__form">
-                            <input type="text" placeholder="Full Name*" class="signup__form__fullname" required></input>
-                            <input type="text" placeholder="Email*" class="signup__form__email" required></input>
-                            <input type="password" placeholder="Password*" class="signup__form__password" required></input>
-                            <input type="password" placeholder="Re Type Password" class="signup__form__repassword"></input>
-
-                        </form>
-
-                        <div class="signup__submit">
-                            <button class="signup__submit__button">Create</button>
-                        </div>
-
-                        <div class="signup__forgot">
-                            <a href="#" class="signup__forgot__already"><h1>Already a member?</h1></a>
-                            <Link to="/" class="signup__forgot__siginin"><h1>Sign In</h1></Link>
-                        </div>
-                    </div>
-                </div>
-                <Footer />
-            </>
-        )
+  constructor(props) {
+    super(props);
+    this.state = {
+      first_name: "",
+      last_name: "",
+      gender: "",
+      address: "",
+      email: "",
+      password: ""
+    };
+  }
+  handleChange = e => {
+    this.setState({
+      [e.target.name]: e.target.value
+    });
+  };
+  onSubmit = () => {
+    const signUpData = {
+      first_name: this.state.first_name,
+      last_name: this.state.last_name,
+      gender: this.state.gender,
+      address: this.state.address,
+      email: this.state.email,
+      password: this.state.password
+    };
+    console.log(signUpData);
+    this.props.signUpRequest(signUpData, this.props.history);
+  };
+  render() {
+    if (this.props.user && this.props.user.success) {
+      console.log("Redirecting to signup");
+      return <Redirect to="/" />;
     }
-}
+    return (
+      <>
+        <Header />
+        <div className="container">
+          <div className="signup">
+            <div className="signup__heading">
+              <h1>Sign Up</h1>
+            </div>
 
-export default SignUp;
+            <form className="signup__form">
+              <input
+                type="text"
+                name="first_name"
+                placeholder="First Name*"
+                className="signup__form__fullname"
+                required
+                onChange={this.handleChange}
+              ></input>
+              <input
+                type="text"
+                name="last_name"
+                placeholder="Last Name*"
+                className="signup__form__fullname"
+                required
+                onChange={this.handleChange}
+              ></input>
+              <input
+                type="text"
+                name="email"
+                placeholder="Email*"
+                className="signup__form__email"
+                required
+                onChange={this.handleChange}
+              ></input>
+              <input
+                type="password"
+                name="password"
+                placeholder="Password*"
+                className="signup__form__password"
+                required
+                onChange={this.handleChange}
+              ></input>
+              <select
+                className="signup__form__gender"
+                name="gender"
+                required
+                onChange={this.handleChange}
+              >
+                <option value="">Select Gender</option>
+                <option value="M">Male</option>
+                <option value="F">Female</option>
+              </select>
+              <input
+                type="text"
+                name="address"
+                placeholder="Address*"
+                className="signup__form__address"
+                required
+                onChange={this.handleChange}
+              ></input>
+              {this.props.user && this.props.user.success === false ? (
+                this.props.user.errors.map((message, index) => {
+                  return (
+                    <li className="error_message" key={index}>
+                      <p className="error_p">{message.message}</p>
+                    </li>
+                  );
+                })
+              ) : (
+                <div></div>
+              )}
+              <div className="signup__submit">
+                <button
+                  className="signup__submit__button"
+                  onClick={this.onSubmit}
+                >
+                  Create
+                </button>
+              </div>
+            </form>
+
+            <div className="signup__forgot">
+              <a href="/#" className="signup__forgot__already">
+                <h1>Already a member?</h1>
+              </a>
+              <Link to="/" className="signup__forgot__siginin">
+                <h1>Sign In</h1>
+              </Link>
+            </div>
+          </div>
+        </div>
+        <Footer />
+      </>
+    );
+  }
+}
+const mapStateToProps = state => {
+  return {
+    user: state.user
+  };
+};
+const mapDispachToProps = dispatch => {
+  return {
+    signUpRequest: signUpData => dispatch(signUpRequest(signUpData))
+  };
+};
+export default connect(mapStateToProps, mapDispachToProps)(SignUp);

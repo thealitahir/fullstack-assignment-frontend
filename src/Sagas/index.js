@@ -11,8 +11,28 @@ export function* loginSaga(payload) {
   }
 }
 
+export function* signUpSaga(payload){
+  try {
+    const { data } = yield call(Services.signUp, payload.payload);
+    yield put({ type: types.SIGNUP_REQUEST_SUCCESS, payload: data });
+  } catch (error) {
+    yield put({ type: types.SIGNUP_REQUEST_FAILURE, payload: error });
+  }
+}
+
+export function* getAllItemsSaga(payload){
+  try {
+    const { data } = yield call(Services.getAllItems, payload.payload);
+    yield put({ type: types.GET_ITEMS_SUCCESS, payload: data });
+  } catch (error) {
+    yield put({ type: types.GET_ITEMS_FAILURE, payload: error });
+  }
+}
+
 export function* rootSaga() {
   yield all([
-    yield takeEvery(types.LOGIN_REQUEST, loginSaga)
+    yield takeEvery(types.LOGIN_REQUEST, loginSaga),
+    yield takeEvery(types.SIGNUP_REQUEST, signUpSaga),
+    yield takeEvery(types.GET_ITEMS_REQUEST, getAllItemsSaga)
   ]);
 }

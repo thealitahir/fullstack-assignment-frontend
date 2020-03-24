@@ -1,14 +1,13 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { loginRequest } from "../../../Actions";
 import { connect } from "react-redux";
-
-import closeImage from "../../../images/PNG/cross.png";
 
 import Header from "../../../Component/CommonComponent/Header";
 import Footer from "../../../Component/CommonComponent/Footer";
 
 import "./style.css";
+// import { act } from "react-dom/test-utils";
 
 class Login extends Component {
   constructor(props) {
@@ -18,29 +17,29 @@ class Login extends Component {
       password: ""
     };
   }
-  componentDidMount = () => {
-    
-  };
+  componentDidMount = () => {};
   handleChange = e => {
     this.setState({
       [e.target.name]: e.target.value
     });
   };
   onSubmit = () => {
-    const loginData= {
+    const loginData = {
       email: this.state.email,
       password: this.state.password
-    }
+    };
     console.log(loginData);
-    this.props.loginRequest(loginData);
-  }
+    this.props.loginRequest(loginData, this.props.history);
+  };
   render() {
+    if (this.props.user && this.props.user.success) {
+      return <Redirect to="/products" />;
+    }
     return (
       <>
         <Header />
         <div className="container">
           <div className="signin">
-
             <div className="signin__heading">
               <h1>Sign In</h1>
             </div>
@@ -60,9 +59,24 @@ class Login extends Component {
                 onChange={this.handleChange}
                 className="signin__form__password"
               ></input>
+              {this.props.user && this.props.user.success === false ? (
+                this.props.user.errors.map((message, index) => {
+                  return (
+                    <li className="error_message" key={index}>
+                      <p className="error_p">{message.message}</p>
+                    </li>
+                  );
+                })
+              ) : (
+                <div></div>
+              )}
               <div className="signin__form__check">
                 <label className="cont">
-                  <input type="checkbox" checked="checked"></input>
+                  <input
+                    type="checkbox"
+                    checked="checked"
+                    onChange={this.handleChange}
+                  ></input>
                   <span className="checkmark"></span>
                 </label>
                 <h1 className="signin__form__check__remember">Remember</h1>
@@ -70,11 +84,16 @@ class Login extends Component {
             </form>
 
             <div className="signin__submit">
-              <button className="signin__submit__button" onClick={this.onSubmit}>Sign in</button>
+              <button
+                className="signin__submit__button"
+                onClick={this.onSubmit}
+              >
+                Sign in
+              </button>
             </div>
 
             <div className="signin__forgot">
-              <a href="#" className="signin__forgot__password">
+              <a href="/#" className="signin__forgot__password">
                 <h1>Forgot Password?</h1>
               </a>
               <Link to="/signup" className="signin__forgot__account">

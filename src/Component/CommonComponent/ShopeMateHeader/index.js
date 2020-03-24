@@ -9,12 +9,12 @@ class ShopeMateHeader extends Component {
         <nav className="shopmateHeader">
           <h1 className="shopmateHeader__heading">Shopemate</h1>
           <div className="shopmateHeader__items">
-            <ul class="shopmate__list">
-              <li class="shopmate__list__item">Women</li>
-              <li class="shopmate__list__item">Men</li>
-              <li class="shopmate__list__item">Kids</li>
-              <li class="shopmate__list__item">Shoes</li>
-              <li class="shopmate__list__item">Brands</li>
+            <ul className="shopmate__list">
+              <li className="shopmate__list__item">Women</li>
+              <li className="shopmate__list__item">Men</li>
+              <li className="shopmate__list__item">Kids</li>
+              <li className="shopmate__list__item">Shoes</li>
+              <li className="shopmate__list__item">Brands</li>
             </ul>
             <Search />
             <div lang="shopmateHeader__cart">
